@@ -57,7 +57,7 @@ BlackMagicDeckLinkCaptureDevice::BlackMagicDeckLinkCaptureDevice(const IDeckLink
 	LONGLONG duplexMode;
 	IF_S_OK(m_deckLinkAttributes->GetInt(BMDDeckLinkDuplex, &duplexMode))
 	{
-		if((BMDDuplexMode)duplexMode == bmdDuplexInactive)
+		if ((BMDDuplexMode)duplexMode == bmdDuplexInactive)
 		{
 			m_canCapture = false;
 			return;
@@ -362,7 +362,7 @@ timingclocktime_t BlackMagicDeckLinkCaptureDevice::TimingClockNow()
 	assert(m_outputCaptureData.load(std::memory_order_acquire));
 	assert(
 		m_state == CaptureDeviceState::CAPTUREDEVICESTATE_CAPTURING ||
-		m_state == CaptureDeviceState::CAPTUREDEVICESTATE_READY );  // TODO: We will also get called if we're ready not sure if we want to be more strict on this and not allow it + tighten up state machine
+		m_state == CaptureDeviceState::CAPTUREDEVICESTATE_READY);  // TODO: We will also get called if we're ready not sure if we want to be more strict on this and not allow it + tighten up state machine
 
 	BMDTimeValue currentTimeTicks;
 	IF_NOT_S_OK(m_deckLinkInput->GetHardwareReferenceClock(
@@ -580,7 +580,7 @@ HRESULT STDMETHODCALLTYPE BlackMagicDeckLinkCaptureDevice::VideoInputFrameArrive
 
 		// Every every so often get the hardware latency.
 		// TODO: Change to framerate rather than fixed number of frames
-		if(m_capturedVideoFrameCount % 20 == 0)
+		if (m_capturedVideoFrameCount % 20 == 0)
 		{
 			timingclocktime_t timingClockNow = TimingClockNow();
 			m_hardwareLatencyMs = TimingClockDiffMs(timingClockFrameTime, timingClockNow, TimingClockTicksPerSecond());
@@ -740,7 +740,7 @@ HRESULT STDMETHODCALLTYPE BlackMagicDeckLinkCaptureDevice::VideoInputFrameArrive
 				// Mastering display luminance
 				IF_NOT_S_OK(metadataExtensions->GetFloat(bmdDeckLinkFrameMetadataHDRMaxDisplayMasteringLuminance, &doubleValue))
 					doubleValue = 0.0;
-				if (fabs(m_videoHdrData.masteringDisplayMaxLuminance-doubleValue) > 0.001)
+				if (fabs(m_videoHdrData.masteringDisplayMaxLuminance - doubleValue) > 0)
 				{
 					m_videoHdrData.masteringDisplayMaxLuminance = doubleValue;
 					videoStateChanged = true;
@@ -748,7 +748,7 @@ HRESULT STDMETHODCALLTYPE BlackMagicDeckLinkCaptureDevice::VideoInputFrameArrive
 
 				IF_NOT_S_OK(metadataExtensions->GetFloat(bmdDeckLinkFrameMetadataHDRMinDisplayMasteringLuminance, &doubleValue))
 					doubleValue = 0.0;
-				if (fabs(m_videoHdrData.masteringDisplayMinLuminance - doubleValue) > 0.001)
+				if (fabs(m_videoHdrData.masteringDisplayMinLuminance - doubleValue) > 0)
 				{
 					m_videoHdrData.masteringDisplayMinLuminance = doubleValue;
 					videoStateChanged = true;
@@ -1090,12 +1090,12 @@ void BlackMagicDeckLinkCaptureDevice::OnNotifyStatusChanged(BMDDeckLinkStatusID 
 
 	switch (statusID)
 	{
-	// Device state changed
+		// Device state changed
 	case bmdDeckLinkStatusBusy:
 		OnLinkStatusBusyChange();
 		break;
 
-	// Card state changed.
+		// Card state changed.
 	case bmdDeckLinkStatusVideoInputSignalLocked:
 	case bmdDeckLinkStatusDetectedVideoInputFieldDominance:
 	case bmdDeckLinkStatusDetectedVideoInputMode:
@@ -1103,14 +1103,14 @@ void BlackMagicDeckLinkCaptureDevice::OnNotifyStatusChanged(BMDDeckLinkStatusID 
 		SendCardStateCallback();
 		break;
 
-	// Video state changed
+		// Video state changed
 	case bmdDeckLinkStatusCurrentVideoInputPixelFormat:
 	case bmdDeckLinkStatusDetectedVideoInputColorspace:
 	case bmdDeckLinkStatusCurrentVideoInputMode:
 		// not used as we get these from from the frame and format callbacks
 		break;
 
-	// All others ignored
+		// All others ignored
 	default:
 		break;
 	}

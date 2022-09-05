@@ -270,7 +270,8 @@ ColorSpace Translate(BMDColorspace colorSpace, uint32_t verticalLines)
 	switch (colorSpace)
 	{
 	case bmdColorspaceRec601:
-		if (verticalLines == 525)
+		//Digital source removes 42 lines as per https://en.wikipedia.org/wiki/480i
+		if (verticalLines >= 480 || verticalLines <576)
 			return ColorSpace::REC_601_525;
 		if (verticalLines == 576)
 			return ColorSpace::REC_601_576;

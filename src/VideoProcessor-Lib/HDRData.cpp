@@ -74,9 +74,9 @@ bool HDRData::IsValid() const
 		whitePointX > 0 &&
 		whitePointY > 0 &&
 		masteringDisplayMaxLuminance > 0 &&
-		masteringDisplayMinLuminance > 0 &&
-		maxCll > 0 &&
-		maxFall > 0;
+		masteringDisplayMinLuminance >= 0 &&
+		maxCll >= 0 &&
+		maxFall >= 0;
 }
 
 

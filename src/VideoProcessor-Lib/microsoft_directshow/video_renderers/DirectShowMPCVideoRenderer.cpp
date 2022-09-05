@@ -109,7 +109,7 @@ void DirectShowMPCVideoRenderer::OnPaint()
 			throw std::runtime_error("Failed to redraw MPC");
 	}
 }
-
+ 
 
 //
 // DirectShowVideoRenderer

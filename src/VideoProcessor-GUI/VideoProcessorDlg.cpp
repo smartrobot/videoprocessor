@@ -240,6 +240,10 @@ CVideoProcessorDlg::~CVideoProcessorDlg()
 // Option handlers
 //
 
+void CVideoProcessorDlg::setConversionOveride()
+{
+	m_conversionOveride = 1;
+}
 
 void CVideoProcessorDlg::StartFullScreen()
 {
@@ -264,6 +268,58 @@ void CVideoProcessorDlg::StartFrameOffset(const CString& frameOffset)
 	m_defaultFrameOffset = frameOffset;
 }
 
+void CVideoProcessorDlg::setColorSpace(int i)
+{
+	m_defaultColorSpace = i;
+
+}
+
+void CVideoProcessorDlg::setHDRColorSpace(int i)
+{
+	m_defaultHDRColorSpace = i;
+
+}
+
+void CVideoProcessorDlg::setHDRLuminance(int i)
+{
+	m_defaultHDRLuminance = i;
+
+}
+
+void CVideoProcessorDlg::setRange(int i)
+{
+	m_defaultNominalRange = i;
+}
+
+void CVideoProcessorDlg::setStartStop(int i)
+{
+	m_defaultStartStopTime = i;
+}
+
+void CVideoProcessorDlg::setTransferFunction(int i) {
+	m_defaultTransferFunction = i;
+}
+
+void CVideoProcessorDlg::setTransferMatrix(int i) {
+	m_defaultTransferMatrix = i;
+}
+void CVideoProcessorDlg::setPrimaries(int i) {
+	m_defaultPrimaries = i;
+}
+
+void CVideoProcessorDlg::setMaxCll(const CString& maxcll)
+{
+	
+
+	VideoStateComPtr videoState = new VideoState(*m_captureDeviceVideoState);
+	if (!videoState->hdrData)
+		videoState->hdrData = std::make_shared<HDRData>();
+
+	videoState->hdrData->maxCll = 1000;
+	videoState->hdrData->maxFall = 1000;
+	videoState->hdrData->masteringDisplayMinLuminance = 0.0001;
+	videoState->hdrData->masteringDisplayMaxLuminance = 1000;
+}
 
 //
 // UI-related handlers
@@ -287,6 +343,7 @@ void CVideoProcessorDlg::OnCaptureDeviceSelected()
 	}
 
 	UpdateState();
+
 }
 
 
@@ -2052,63 +2109,63 @@ BOOL CVideoProcessorDlg::OnInitDialog()
 		int index = m_colorspaceContainerCombo.AddString(p.first);
 		m_colorspaceContainerCombo.SetItemData(index, (int)p.second);
 	}
-	m_colorspaceContainerCombo.SetCurSel(0);
+	m_colorspaceContainerCombo.SetCurSel(m_defaultColorSpace);
 
 	for (auto p : HDR_COLORSPACE_OPTIONS)
 	{
 		int index = m_hdrColorspaceCombo.AddString(p.first);
 		m_hdrColorspaceCombo.SetItemData(index, (int)p.second);
 	}
-	m_hdrColorspaceCombo.SetCurSel(0);
+	m_hdrColorspaceCombo.SetCurSel(m_defaultHDRColorSpace);
 
 	for (auto p : HDR_LUMINANCE_OPTIONS)
 	{
 		int index = m_hdrLuminanceCombo.AddString(p.first);
 		m_hdrLuminanceCombo.SetItemData(index, (int)p.second);
 	}
-	m_hdrLuminanceCombo.SetCurSel(0);
+	m_hdrLuminanceCombo.SetCurSel(m_defaultHDRLuminance);
 
 	for (auto p : RENDERER_DIRECTSHOW_START_STOP_TIME_OPTIONS)
 	{
 		int index = m_rendererDirectShowStartStopTimeMethodCombo.AddString(ToString(p));
 		m_rendererDirectShowStartStopTimeMethodCombo.SetItemData(index, (int)p);
 	}
-	m_rendererDirectShowStartStopTimeMethodCombo.SetCurSel(0);
+	m_rendererDirectShowStartStopTimeMethodCombo.SetCurSel(m_defaultStartStopTime);
 
 	for (const auto& p : DIRECTSHOW_NOMINAL_RANGE_OPTIONS)
 	{
 		int index = m_rendererNominalRangeCombo.AddString(p.first);
 		m_rendererNominalRangeCombo.SetItemData(index, p.second);
 	}
-	m_rendererNominalRangeCombo.SetCurSel(0);
+	m_rendererNominalRangeCombo.SetCurSel(m_defaultNominalRange);
 
 	for (const auto& p : DIRECTSHOW_TRANSFER_FUNCTION_OPTIONS)
 	{
 		int index = m_rendererTransferFunctionCombo.AddString(p.first);
 		m_rendererTransferFunctionCombo.SetItemData(index, (int)p.second);
 	}
-	m_rendererTransferFunctionCombo.SetCurSel(0);
+	m_rendererTransferFunctionCombo.SetCurSel(m_defaultTransferFunction);
 
 	for (const auto& p : DIRECTSHOW_TRANSFER_MATRIX_OPTIONS)
 	{
 		int index = m_rendererTransferMatrixCombo.AddString(p.first);
 		m_rendererTransferMatrixCombo.SetItemData(index, (int)p.second);
 	}
-	m_rendererTransferMatrixCombo.SetCurSel(0);
+	m_rendererTransferMatrixCombo.SetCurSel(m_defaultTransferMatrix);
 
 	for (const auto& p : DIRECTSHOW_PRIMARIES_OPTIONS)
 	{
 		int index = m_rendererPrimariesCombo.AddString(p.first);
 		m_rendererPrimariesCombo.SetItemData(index, (int)p.second);
 	}
-	m_rendererPrimariesCombo.SetCurSel(0);
+	m_rendererPrimariesCombo.SetCurSel(m_defaultPrimaries);
 
 	for (const auto& p : RENDERER_VIDEO_CONVERSION)
 	{
 		int index = m_rendererVideoConversionCombo.AddString(ToString(p));
 		m_rendererVideoConversionCombo.SetItemData(index, (int)p);
 	}
-	m_rendererVideoConversionCombo.SetCurSel(0);
+	m_rendererVideoConversionCombo.SetCurSel(m_conversionOveride);
 
 	// Start discovery services
 	m_blackMagicDeviceDiscoverer->Start();
@@ -2186,7 +2243,7 @@ void CVideoProcessorDlg::OnOK()
 
 void CVideoProcessorDlg::OnPaint()
 {
-	if (IsIconic())
+	if (IsIconic()) //https://docs.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-isiconic
 	{
 		CPaintDC dc(this); // device context for painting
 
@@ -2203,7 +2260,7 @@ void CVideoProcessorDlg::OnPaint()
 		// Draw the icon
 		dc.DrawIcon(x, y, m_hIcon);
 	}
-	else
+	else //if window is not minimised
 	{
 		if (m_videoRenderer)
 			m_videoRenderer->OnPaint();

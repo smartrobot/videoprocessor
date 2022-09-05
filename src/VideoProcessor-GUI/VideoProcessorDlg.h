@@ -52,6 +52,18 @@ public:
 	enum { IDD = IDD_VIDEOPROCESSOR_DIALOG };
 
 	// Option handlers
+	void setConversionOveride();
+	void setColorSpace(int i);
+	void setHDRColorSpace(int i);
+	void setHDRLuminance(int i);
+	void setMaxCll(const CString&);
+
+	void setPrimaries(int i);
+	void setTransferMatrix(int i);
+	void setTransferFunction(int i);
+	void setStartStop(int i);
+	void setRange(int i);
+
 	void StartFullScreen();
 	void DefaultRendererName(const CString&);
 	void StartFrameOffsetAuto();
@@ -220,6 +232,19 @@ protected:
 	CString m_defaultRendererName;
 	bool m_frameOffsetAutoStart = false;
 	CString m_defaultFrameOffset = TEXT("90");
+
+	int m_conversionOveride = 0;
+	int m_defaultColorSpace = 0;
+	int m_defaultHDRColorSpace = 0;
+	int m_defaultHDRLuminance = 0;
+	int m_defaultStartStopTime = 0;
+	int m_defaultNominalRange = 0;
+	int m_defaultTransferFunction = 0;
+	int m_defaultTransferMatrix = 0;
+	int m_defaultPrimaries = 0;
+
+
+
 
 
 	IVideoRenderer* m_videoRenderer = nullptr;
